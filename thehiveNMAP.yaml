@@ -1,0 +1,41 @@
+name: grail
+
+type: frequency
+
+index: filebeat-*
+
+num_events: 3
+
+timeframe:
+  hours: 1
+
+realalert:
+  minutes: 0
+
+filter: 
+#[]
+- term:
+    dissect.alert: NMAP ping sweep Scan
+
+alert: hivealerter
+
+hive_connection:
+  hive_host: http://localhost
+  hive_port: 9000
+  hive_apikey: dgOZ/Rk54iWFFcZ20kXG0xUMmtv+R+IM
+  hive_proxies:
+    http: ''
+    https: ''
+
+hive_alert_config:
+  title: 'Snort Logs'
+  type: 'external'
+  source: 'elastalert'
+  severity: 2
+  tags: ['NMAP-scan', 'name']
+  tlp: 3
+  status: 'New'
+  follow: True
+
+hive_observable_data_mapping:
+  - ip: dissect.ip_ori
