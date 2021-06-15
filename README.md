@@ -1,2 +1,4 @@
 # fileselastalert
-files
+├── logstash_stdout.conf
+└── pipeline
+    └── logstash.conf
