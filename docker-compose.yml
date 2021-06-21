@@ -25,16 +25,16 @@ services:
       - ./vol/elasticsearch_data:/usr/share/elasticsearch/data
       - ./vol/elasticsearch_logs:/usr/share/elasticsearch/logs
 
-  logstash:
-    image: 'docker.elastic.co/logstash/logstash:7.11.1'
-    container_name: logstash
-    restart: unless-stopped
-    volumes:
-      - type: bind
-        source: "./logstash/logstash_stdout.conf"
-        target: "/usr/share/logstash/pipeline/logstash.conf"
-    depends_on:
-      - elasticsearch
+#  logstash:
+#    image: 'docker.elastic.co/logstash/logstash:7.11.1'
+#    container_name: logstash
+#    restart: unless-stopped
+#    volumes:
+#      - type: bind
+#        source: "./logstash/logstash_stdout.conf"
+#        target: "/usr/share/logstash/pipeline/logstash.conf"
+#    depends_on:
+#      - elasticsearch
 
   kibana:
     image: 'docker.elastic.co/kibana/kibana:7.11.1'
