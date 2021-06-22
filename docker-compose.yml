@@ -25,17 +25,6 @@ services:
       - ./vol/elasticsearch_data:/usr/share/elasticsearch/data
       - ./vol/elasticsearch_logs:/usr/share/elasticsearch/logs
 
-#  logstash:
-#    image: 'docker.elastic.co/logstash/logstash:7.11.1'
-#    container_name: logstash
-#    restart: unless-stopped
-#    volumes:
-#      - type: bind
-#        source: "./logstash/logstash_stdout.conf"
-#        target: "/usr/share/logstash/pipeline/logstash.conf"
-#    depends_on:
-#      - elasticsearch
-
   kibana:
     image: 'docker.elastic.co/kibana/kibana:7.11.1'
     container_name: kibana
@@ -45,21 +34,32 @@ services:
     ports:
       - '5601:5601'
 
-  filebeat:
-    image: 'docker.elastic.co/beats/filebeat:7.11.1'
-    container_name: filebeat
+  logstash:
+    image: 'docker.elastic.co/logstash/logstash:7.11.1'
+    container_name: logstash
     user: root
-    environment:
-      - filebeat
-    depends_on:
-      - "elasticsearch"
+    restart: unless-stopped
     volumes:
-      - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
-      - "./test.json:/usr/share/filebeat/sample.json"
-      - "/var/lib/docker/containers:/usr/share/filebeat/dockerlogs:ro"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/var/log/snort/alert_fast.txt:/var/log/snort/alert_fast.txt"
-    command: ./filebeat -e -c filebeat.yml
+      - ./logstash/conf/logstash-sample.conf:/usr/share/logstash/pipeline/logstash.conf
+      - /var/log/snort/alert_fast.txt:/var/log/snort/alert_fast.txt:z
+    depends_on:
+      - elasticsearch
+
+#  filebeat:
+#    image: 'docker.elastic.co/beats/filebeat:7.11.1'
+#    container_name: filebeat
+#    user: root
+#    environment:
+#      - filebeat
+#    depends_on:
+#      - "elasticsearch"
+#    volumes:
+#      - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
+#      - "./test.json:/usr/share/filebeat/sample.json"
+#      - "/var/lib/docker/containers:/usr/share/filebeat/dockerlogs:ro"
+#      - "/var/run/docker.sock:/var/run/docker.sock"
+#      - "/var/log/snort/alert_fast.txt:/var/log/snort/alert_fast.txt"
+#    command: ./filebeat -e -c filebeat.yml
 
   cortex:
     image: 'thehiveproject/cortex:latest'
